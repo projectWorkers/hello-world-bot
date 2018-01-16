@@ -1,21 +1,33 @@
 import tweepy # for tweeting
 import secrets # shhhh
-from book_manager import BookManager # for getting sentences out of our book file
+import re #Regular expression
+from random import randint #For randomizing
 
-def get_next_chunk():
-  # open text file
-  book = BookManager()
-  first_sentence = book.first_sentence()
-  # tweet the whole sentence if it's short enough
-  if len(first_sentence) <= 140:
-    chunk = first_sentence
-  # otherwise just print the first 140 characters
-  else:
-    chunk = first_sentence[0:140]
+def insult():
+    vFile = open("verb.txt", "r")
+    ingList = []
+    insult = ""
+    for word in vFile.readlines():
+    	if re.match(".*ing(.|\n)$", word):
+	    	ingList.append(word)
+    insult = insult + ingList[randint(1, len(ingList))]
+    vFile.close()
 
-  # delete what we just tweeted from the text file
-  book.delete_message(chunk)
-  return chunk
+
+    aFile = open("adj.txt", "r")
+    aList = []
+    for word in aFile.readlines():
+	    aList.append(word)
+    insult = insult + aList[randint(1, len(aList))]
+    aFile.close()
+
+    nFile= open("noun.txt", "r")
+    nList = []
+    for word in nFile.readlines():
+	    nList.append(word)
+    insult = insult + nList[randint(1, len(nList))]
+    nFile.close()
+    return insult
 
 def tweet(message):
   auth = tweepy.OAuthHandler(secrets.consumer_key, secrets.consumer_secret)
@@ -26,4 +38,4 @@ def tweet(message):
   api.update_status(status=message)
 
 if __name__ == '__main__':
-  tweet(get_next_chunk())
+  tweet(insult())

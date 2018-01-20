@@ -1,7 +1,8 @@
-import tweepy # for tweeting
-import secrets # shhhh
-import re #Regular expression
-from random import randint #For randomizing
+import tweepy               # for tweeting
+import secrets              # shhhh
+import re                   #Regular expression
+import logging              # cause loggin' is important we're all lumberjacks here
+from random import randint  #For randomizing
 
 def insult():
     vFile = open("verb.txt", "r")
@@ -35,7 +36,11 @@ def tweet(message):
   api = tweepy.API(auth)
   auth.secure = True
   print("Posting message {}".format(message))
-  api.update_status(status=message)
+  try:
+    tweet = api.update_status(status=message)
+  except tweepy.TweepError:
+    logging.warn("you done fucked up now!")
+  
 
 if __name__ == '__main__':
   tweet(insult())

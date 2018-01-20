@@ -43,4 +43,7 @@ def tweet(message):
   
 
 if __name__ == '__main__':
+  logging.basicConfig(filename='insultBot.log', level=logging.INFO)
+  logging.info('Started')
   tweet(insult())
+  logging.info('Finished')
